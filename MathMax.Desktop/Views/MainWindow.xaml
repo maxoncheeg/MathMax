@@ -1,0 +1,12 @@
+﻿<Window x:Class="MathMax.Desktop.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MathMax.Desktop.Views"
+        xmlns:v="clr-namespace:MathMax.Desktop.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance v:MainViewModel}"
+        Title="{Binding Title}" MinHeight="720" MinWidth="1280" Height="720" Width="1280">
+    <ContentControl x:Name="MainContentHost" />
+</Window>

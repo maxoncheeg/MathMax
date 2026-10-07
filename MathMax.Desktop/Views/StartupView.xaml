@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="MathMax.Desktop.Views.StartupView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:MathMax.Desktop.Views"
+        xmlns:vm="clr-namespace:MathMax.Desktop.ViewModels"
+        d:DataContext="{d:DesignInstance vm:StartupViewModel}"
+        FontFamily="Consolas" FontSize="20"
+        mc:Ignorable="d" Height="720" Width="1280">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Margin="20, 20, 20, 0" TextWrapping="Wrap" TextAlignment="Center">
+                Введите широковещательный адрес для поиска помощников для выполнении задачи
+            </TextBlock>
+            <TextBox Margin="20, 0, 20, 5" Width="200" TextAlignment="Center" Text="{Binding IpAddress}"/>
+            
+            <TextBlock Margin="20, 5, 20, 0" TextWrapping="Wrap" TextAlignment="Center">
+                и порт для рассылки
+            </TextBlock>
+            <TextBox Margin="20, 0, 20, 20" Width="200" TextAlignment="Center" Text="{Binding Port}"/>
+            
+            <Button Margin="20" Width="250" Height="70" Command="{Binding GoToHost}">Найти помощников</Button>
+        </StackPanel>
+        
+        <TextBlock Grid.Row="1" FontSize="40" TextAlignment="Center">ИЛИ</TextBlock>
+        
+        <Grid Grid.Row="2">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Margin="5, 20, 20, 0" TextWrapping="Wrap" TextAlignment="Center">
+                    Введите порт для прослушки, чтобы стать помощником
+                </TextBlock>
+                <TextBox Margin="20, 0, 20, 20" Width="100" TextAlignment="Center">5000</TextBox>
+                
+                <Button Margin="20" Width="250" Height="70" Command="{Binding GoToTask}">Стать помощником</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="MathMax.Desktop.Views.HostView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:MathMax.Desktop.Views"
+             xmlns:vm="clr-namespace:MathMax.Desktop.ViewModels"
+             mc:Ignorable="d"
+             FontFamily="Consolas"
+             FontSize="16"
+             d:DataContext="{d:DesignInstance vm:HostViewModel}"
+             d:DesignHeight="720" d:DesignWidth="1280">
+    <Grid>
+        <!-- <TextBlock>Подключение помощников...</TextBlock> -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <DockPanel LastChildFill="True">
+                <TextBox DockPanel.Dock="Top">Сканируем помещения по UDP...</TextBox>
+
+
+                <Button DockPanel.Dock="Bottom" FontSize="20" Padding="10" Command="{Binding StartCommand}">НАЧАТЬ</Button>
+                <Button DockPanel.Dock="Bottom" FontSize="20" Padding="10" x:Name="tryButton" >НАЧАТЬnotrue</Button>
+
+                <TextBox DockPanel.Dock="Bottom" Text="{Binding Points}"></TextBox>
+                
+                <ListBox DockPanel.Dock="Bottom">
+                </ListBox>
+
+
+            </DockPanel>
+
+            <StackPanel Grid.Row="1" Background="CadetBlue">
+
+            </StackPanel>
+        </Grid>
+
+        <UserControl Grid.Column="1" Content="{Binding PiVisual}"></UserControl>
+    </Grid>
+</UserControl>

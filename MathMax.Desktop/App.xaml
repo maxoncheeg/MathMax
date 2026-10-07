@@ -1,0 +1,29 @@
+﻿<Application x:Class="MathMax.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MathMax.Desktop"
+             xmlns:viewModels="clr-namespace:MathMax.Desktop.ViewModels"
+             xmlns:views="clr-namespace:MathMax.Desktop.Views"
+>
+    <Application.Resources>
+        <DataTemplate DataType="{x:Type viewModels:MainViewModel}">
+            <views:MainWindow />
+        </DataTemplate>
+    
+        <DataTemplate DataType="{x:Type viewModels:StartupViewModel}">
+            <views:StartupView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModels:HostViewModel}">
+            <views:HostView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModels:TaskViewModel}">
+            <views:TaskView />
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModels:PiVisualViewModel}">
+            <views:PiVisualView />
+        </DataTemplate>
+    </Application.Resources>
+</Application>
