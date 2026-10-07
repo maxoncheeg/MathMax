@@ -2,5 +2,5 @@
 
 public interface IUdpSender
 {
-    public Task SendUdpMessageAsync(string message, string address, int port, CancellationToken token);
+    public Task SendUdpMessageAsync(string message, string address, int port, CancellationToken token = default);
 }

@@ -32,6 +32,8 @@ public static class CompositionRoot
         collection.AddSingleton<INetworkInfoProvider, NetworkInfoProvider>();
         collection.AddSingleton<IPiSearcher, MonteCarloPiSearcher>();
         collection.AddScoped<IPiHost, PiHost>();
+        collection.AddScoped<IUdpSender, UdpSender>();
+        collection.AddScoped<IUdpReceiver, UdpReceiver>();
         collection.AddScoped<IPiVisualizer, PiVisualizer>();
         
         return collection.BuildServiceProvider();

@@ -11,7 +11,6 @@
              d:DataContext="{d:DesignInstance vm:HostViewModel}"
              d:DesignHeight="720" d:DesignWidth="1280">
     <Grid>
-        <!-- <TextBlock>Подключение помощников...</TextBlock> -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="2*" />
@@ -20,29 +19,30 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*" />
-                <RowDefinition Height="*" />
+
             </Grid.RowDefinitions>
 
             <DockPanel LastChildFill="True">
-                <TextBox DockPanel.Dock="Top">Сканируем помещения по UDP...</TextBox>
+                <Label DockPanel.Dock="Top">Статус:</Label>
+                <TextBlock DockPanel.Dock="Top" Text="{Binding Status}" TextAlignment="Center"></TextBlock>
+                <Label DockPanel.Dock="Top">Помощники:</Label>
 
-
-                <Button DockPanel.Dock="Bottom" FontSize="20" Padding="10" Command="{Binding StartCommand}">НАЧАТЬ</Button>
-                <Button DockPanel.Dock="Bottom" FontSize="20" Padding="10" x:Name="tryButton" >НАЧАТЬnotrue</Button>
-
-                <TextBox DockPanel.Dock="Bottom" Text="{Binding Points}"></TextBox>
                 
-                <ListBox DockPanel.Dock="Bottom">
+                <Button DockPanel.Dock="Bottom" FontSize="20" Padding="10" 
+                        Command="{Binding StartCommand}">
+                    Начать выполнение
+                </Button>
+
+                <TextBox DockPanel.Dock="Bottom" TextAlignment="Center" Margin="10, 0, 10, 10" Text="{Binding Points}"></TextBox>
+                <Label DockPanel.Dock="Bottom">Количество точек:</Label>
+                
+                <ListBox Background="AliceBlue" DockPanel.Dock="Bottom" ItemsSource="{Binding Helpers}">
                 </ListBox>
 
 
             </DockPanel>
-
-            <StackPanel Grid.Row="1" Background="CadetBlue">
-
-            </StackPanel>
         </Grid>
 
-        <UserControl Grid.Column="1" Content="{Binding PiVisual}"></UserControl>
+        <UserControl Background="#fafafa" Grid.Column="1" Content="{Binding PiVisual}"></UserControl>
     </Grid>
 </UserControl>

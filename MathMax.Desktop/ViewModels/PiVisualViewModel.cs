@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using MathMax.Desktop.Models;
+using MathMax.Infrastructure.Network;
 using MathMax.Infrastructure.Pi;
 
 namespace MathMax.Desktop.ViewModels;
@@ -24,6 +25,8 @@ public class PiVisualViewModel : BaseViewModel
 
     private int _wrongPiStartIndex = 0;
     private int _wrongPiLength = 0;
+    
+    private Lock _uiLock = new ();
 
     public WriteableBitmap Bitmap => _piVisualizer.Bitmap;
 
@@ -70,7 +73,7 @@ public class PiVisualViewModel : BaseViewModel
     }
 
 
-    public PiVisualViewModel(IPiVisualizer piVisualizer, IPiSearcher piSearcher)
+    public PiVisualViewModel(IPiVisualizer piVisualizer, IPiSearcher piSearcher, IPiHost piHost)
     {
         _piVisualizer = piVisualizer;
 
@@ -80,16 +83,54 @@ public class PiVisualViewModel : BaseViewModel
         piSearcher.SearchCompleted += PiSearcherOnSearchCompleted;
 
         _piVisualizer.DrawCircle();
+        
+        piHost.TaskPartReceived += PiHostOnTaskPartReceived;
+    }
+
+    private void PiHostOnTaskPartReceived(int arg1, PiResult arg2)
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+            {
+                _uiLock.Enter();
+                
+                InsidePoints = InsidePoints + arg2.Inside;
+                
+                OutsidePoints = OutsidePoints + arg2.Processed - arg2.Inside;
+                Pi = 4.0D * (double)InsidePoints / (InsidePoints + OutsidePoints);
+                
+                WrongPiStartIndex = 0;
+                
+                string pi = Pi.ToString();
+                int wrongPiLength = 0;
+
+                for (int i = 0; i < pi.Length; i++)
+                {
+                    if (pi[i] != RightPi[i] && WrongPiStartIndex == 0)
+                    {
+                        WrongPiStartIndex = i;
+                    }
+                
+                    if(WrongPiStartIndex != 0)
+                        wrongPiLength++;
+                }
+                WrongPiLength = wrongPiLength;
+                
+                _uiLock.Exit();
+            }
+        );
     }
 
     private void PiSearcherOnSearchCompleted(PiResult result)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
+            _uiLock.Enter();
+            
             Milliseconds = result.TotalMilliseconds;
-            Pi = result.Pi;
-            InsidePoints = result.Inside;
-            OutsidePoints = result.Processed - result.Inside;
+            InsidePoints = InsidePoints + result.Inside;
+            OutsidePoints = OutsidePoints + result.Processed - result.Inside;
+            
+            Pi = 4.0D * (double)InsidePoints / (InsidePoints + OutsidePoints);
 
             WrongPiStartIndex = 0;
 
@@ -107,6 +148,8 @@ public class PiVisualViewModel : BaseViewModel
                     wrongPiLength++;
             }
             WrongPiLength = wrongPiLength;
+            
+            _uiLock.Exit();
         });
     }
 
@@ -136,6 +179,10 @@ public class PiVisualViewModel : BaseViewModel
         Application.Current.Dispatcher.Invoke(() =>
         {
             Percent = 0;
+            Pi = 0;
+            Milliseconds = 0;
+            InsidePoints = 0;
+            OutsidePoints = 0;
             _lastRenderTime = Stopwatch.GetTimestamp();
             _piVisualizer.DrawCircle();
         });

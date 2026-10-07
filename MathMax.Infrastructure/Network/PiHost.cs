@@ -8,20 +8,22 @@ namespace MathMax.Infrastructure.Network;
 
 public class PiHost : IPiHost
 {
-    public event Action<int, PiResult>? TaskPartReceived;
-    public event Action<string>? HelperConnected;
-
     private readonly ConcurrentDictionary<string, TcpClient> _clients = new();
-
     private bool _stopRequested = false;
     
+    public event Action<int, PiResult>? TaskPartReceived;
+    public event Action<string>? HelperConnected;
     
-    public async Task StartAsync(string address, int port, CancellationToken cancellationToken = default)
+    public int Port { get; set; }
+
+    public int Clients => _clients.Count;
+
+    public async Task StartAsync(CancellationToken cancellationToken = default)
     {
-        var listener = new TcpListener(IPAddress.Any, port);
+        var listener = new TcpListener(IPAddress.Any, Port);
         listener.Start();
         
-        Console.WriteLine($"Сервер запущен на порту {port}");
+        Console.WriteLine($"Сервер запущен на порту {Port}");
 
         try
         {
@@ -63,11 +65,13 @@ public class PiHost : IPiHost
                 if (bytesRead == 0) break; // Клиент отключился
 
                 var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                Console.WriteLine($"[{clientId}] Получено: {message}");
+
+                var split = message.Split(' ');
+                var inside = long.Parse(split[0]);
+                var processed = long.Parse(split[1]);
                 
-                var response = $"Echo: {message}";
-                var responseBytes = Encoding.UTF8.GetBytes(response);
-                await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                TaskPartReceived?.Invoke(1, new PiResult(4.0 * inside / processed, inside, processed,0));
+                
 
                 // await BroadcastAsync(clientId, message);
             }
@@ -86,7 +90,7 @@ public class PiHost : IPiHost
     
     private async Task BroadcastAsync(string senderId, string message)
     {
-        var broadcastMessage = $"[{senderId}]: {message}";
+        var broadcastMessage = $"{message}";
         var bytes = Encoding.UTF8.GetBytes(broadcastMessage);
 
         foreach (var kvp in _clients)
@@ -106,9 +110,15 @@ public class PiHost : IPiHost
         }
     }
 
-    public Task SendTaskToEachHelperAsync(long points, CancellationToken cancellationToken = default)
+    public async Task<long> SendTaskToEachHelperAsync(long points, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        if (_clients.Count == 0) return points;
+        
+        long taskPoints = points / (_clients.Count + 1);
+
+        await BroadcastAsync(Guid.NewGuid().ToString(), taskPoints.ToString());
+
+        return taskPoints;
     }
 
     public Task StopAsync()
